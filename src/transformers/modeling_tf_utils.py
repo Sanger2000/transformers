@@ -904,7 +904,8 @@ class TFPreTrainedModel(tf.keras.Model, TFModelUtilsMixin, TFGenerationMixin, Pu
         # When y_pred is a ModelOutput and y is a tf.Tensor the metrics update
         # should be done only with the relevant ModelOutput param that is
         # considered by the loss.
-        if isinstance(y_pred, TFSeq2SeqLMOutput) and isinstance(y, tf.Tensor):
+        if isinstance(y_pred, ModelOutput) and isinstance(y, tf.Tensor):
+            assert "logits" in y_pred, f"Missing 'logits' in y_pred of type {type(y_pred)}"
             y_pred = y_pred["logits"]
         self.compiled_metrics.update_state(y, y_pred, sample_weight)
         # Collect metrics to return
